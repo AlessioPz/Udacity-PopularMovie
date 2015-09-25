@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="title_activity_detail">Dettaglio Film</string>
+    <string name="sort_popular">popolarità</string>
+    <string name="sort_rated">valutazioni</string>
+    <string name="pref_title_sort">Ordinamento per</string>
+    <string name="pref_header_general">Generale</string>
+    <string name="pref_title_size">Dimensione locandina</string>
+    <string name="size_orig">originale</string>
+    <string name="size_w154">w154</string>
+    <string name="size_w185">w185</string>
+    <string name="size_w342">w342</string>
+    <string name="size_w500">w500</string>
+    <string name="size_w780">w780</string>
+    <string name="size_w92">w92</string>
+    <string name="lbl_movie_title">Titolo</string>
+    <string name="lbl_movie_release_date">Data Uscita</string>
+    <string name="lbl_movie_vote_avg">Voto medio</string>
+    <string name="msg_connection_error">Ops .. c\'è stato un problema con la connessione ad Internet. Controlla lo stato del dispositivo e riprova.</string>
+</resources>

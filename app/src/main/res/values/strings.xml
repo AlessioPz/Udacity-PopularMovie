@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_detail">Movie Detail</string>
+    <string name="sort_popular">most popular</string>
+    <string name="sort_rated">highest_rated</string>
+    <string name="pref_title_sort">Sort list by</string>
+    <string name="pref_header_general">General</string>
+    <string name="pref_title_size">Poster dimension</string>
+    <string name="size_w92">w92</string>
+    <string name="size_w154">w154</string>
+    <string name="size_w185">w185</string>
+    <string name="size_w342">w342</string>
+    <string name="size_w500">w500</string>
+    <string name="size_w780">w780</string>
+    <string name="size_orig">original</string>
+    <string name="lbl_movie_title">Title</string>
+    <string name="lbl_movie_release_date">Release Date</string>
+    <string name="lbl_movie_vote_avg">Vote average</string>
+    <string name="msg_connection_error">Ops ... there was a problem with the Internet connection. Please check the device status and retry.</string>
+</resources>

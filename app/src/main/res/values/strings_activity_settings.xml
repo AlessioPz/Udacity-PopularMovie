@@ -1,0 +1,35 @@
+<resources>
+    <string name="title_activity_settings" translatable="false">@string/action_settings</string>
+
+    <string name="key_pref_sort" translatable="false">key_pref_sort</string>
+
+    <string-array name="pref_sort_list_titles">
+        <item>@string/sort_popular</item>
+        <item>@string/sort_rated</item>
+    </string-array>
+    <string-array name="pref_sort_list_values">
+        <item>popularity.desc</item>
+        <item>vote_average.desc</item>
+    </string-array>
+
+    <string name="key_pref_size" translatable="false">key_pref_size</string>
+
+    <string-array name="pref_size_list_titles">
+        <item>@string/size_w92</item>
+        <item>@string/size_w154</item>
+        <item>@string/size_w185</item>
+        <item>@string/size_w342</item>
+        <item>@string/size_w500</item>
+        <item>@string/size_w780</item>
+        <item>@string/size_orig</item>
+    </string-array>
+    <string-array name="pref_size_list_values">
+        <item>w92</item>
+        <item>w154</item>
+        <item>w185</item>
+        <item>w342</item>
+        <item>w500</item>
+        <item>w780</item>
+        <item>original</item>
+    </string-array>
+</resources>
