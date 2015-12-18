@@ -1,41 +1,51 @@
 package com.bussolalabs.popularmovies.activity;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bussolalabs.popularmovies.R;
-import com.bussolalabs.popularmovies.util.CommonConstants;
-import com.squareup.picasso.Picasso;
+import com.bussolalabs.popularmovies.custom.Movie;
+import com.bussolalabs.popularmovies.fragment.DetailFragment;
+import com.bussolalabs.popularmovies.util.CommonContents;
 
 /**
  * Created by alessio on 23/09/15.
- */public class DetailActivity extends AppCompatActivity {
+ */public class DetailActivity extends AppCompatActivity implements DetailFragment.OnMovieUpdatedListener{
     private final String TAG = "DetailActivity";
+
+    /*
+    This activity shows the movie detail for handset device
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        String url = getIntent().getStringExtra(CommonConstants.MOVIE_POSTER_PATH);
-        Log.d(TAG, "onCreate - url:" + url + "<<");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        Picasso.with(this) //
-                .load(Uri.parse(url)) //
-                .placeholder(R.drawable.placeholder) //
-                .error(R.drawable.error) //
-                .fit() //
-                .tag(this) //
-                .into((ImageView) findViewById(R.id.img_poster));
+        // get the movie selected from the grid
+        Movie movie = getIntent().getParcelableExtra("movie");
 
-        ((TextView)findViewById(R.id.txt_overview)).setText(getIntent().getStringExtra(CommonConstants.MOVIE_OVERVIEW));
-        ((TextView)findViewById(R.id.txt_title)).setText(getIntent().getStringExtra(CommonConstants.MOVIE_ORIG_TITLE));
-        ((TextView)findViewById(R.id.txt_release_date)).setText(getIntent().getStringExtra(CommonConstants.MOVIE_RELEASE_DATE));
-        ((TextView)findViewById(R.id.txt_vote_avg)).setText(getIntent().getStringExtra(CommonConstants.MOVIE_VOTE_AVG));
+        if (savedInstanceState == null) {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable("movie", movie);
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.item_detail_container, fragment)
+                    .commit();
+        }
+
+    }
+
+    @Override
+    public void onMovieUpdated() {
+        /*
+        catch the event fired into the DetailFragment
+        the movie data is changed (favorite state)
+         */
+        CommonContents.movieUpdated = true;
     }
 
 }

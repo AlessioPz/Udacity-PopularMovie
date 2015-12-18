@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="grid_view" type="layout">@layout/list_twopane_movies</item>
+    <item name="list_reviews" type="layout">@layout/list_twopane_reviews</item>
+</resources>

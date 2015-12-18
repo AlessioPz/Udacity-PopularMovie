@@ -10,4 +10,8 @@
         android:id="@+id/sort_rated"
         android:title="@string/sort_rated"/>
 
+    <item app:showAsAction="ifRoom"
+        android:id="@+id/sort_favorite"
+        android:title="@string/sort_favorite"/>
+
 </menu>

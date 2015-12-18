@@ -5,8 +5,14 @@ package com.bussolalabs.popularmovies.util;
  */
 public class CommonConstants {
 
-    public final static String THEMOVIEDB_API_KEY = "[INSERT YOUR API KEY HERE]";
-    public final static String THEMOVIEDB_URL_LIST = "http://api.themoviedb.org/3/discover/movie?sort_by=#sort#&page=#page#&api_key=";
+    public final static String THEMOVIEDB_API_KEY = "api_key=[INSERT YOUR API KEY HERE]";
+    public final static String THEMOVIEDB_URL_LIST = "http://api.themoviedb.org/3/discover/movie?sort_by=#sort#&page=#page#&";
+
+    public final static String THEMOVIEDB_VIDEOS = "http://api.themoviedb.org/3/movie/#id#/videos?";
+    public final static String THEMOVIEDB_REVIEWS = "http://api.themoviedb.org/3/movie/#id#/reviews?";
+
+    public final static String YOUTUBE_URL_WATCH = "https://www.youtube.com/watch?v=";
+    public final static String YOUTUBE_THUMBNAIL = "http://img.youtube.com/vi/#key#/0.jpg";
 
     // list of possible posters size
     public final static String THEMOVIEDB_SIZE_W92 = "w92";
@@ -24,6 +30,16 @@ public class CommonConstants {
     public final static String MOVIE_OVERVIEW = "overview";
     public final static String MOVIE_RELEASE_DATE = "release_date";
     public final static String MOVIE_VOTE_AVG = "vote_average";
+    public final static String MOVIE_ID = "id";
+
+    public final static String VIDEO_KEY = "key";
+    public final static String VIDEO_NAME = "name";
+    public final static String VIDEO_SITE = "site";
+    public final static String VIDEO_TYPE = "type";
+
+    public final static String REVIEW_AUTHOR = "author";
+    public final static String REVIEW_CONTENT = "content";
+    public final static String REVIEW_URL = "url";
 
     // list of possible sort, only two used by now
     public final static String THEMOVIEDB_SORT_POPULARITY_ASC = "popularity.asc";
@@ -41,4 +57,5 @@ public class CommonConstants {
     public final static String THEMOVIEDB_SORT_VOTE_CNT_ASC = "vote_count.asc";
     public final static String THEMOVIEDB_SORT_VOTE_CNT_DES = "vote_count.desc";
 
+    public final static String FILTER_FAVORITE = "filter_favorite";
 }

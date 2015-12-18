@@ -1,9 +1,13 @@
 package com.bussolalabs.popularmovies.custom;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.widget.AbsListView;
 
+import com.bussolalabs.popularmovies.R;
 import com.bussolalabs.popularmovies.activity.MainActivity;
+import com.bussolalabs.popularmovies.async.GetMoviesAsyncTask;
+import com.bussolalabs.popularmovies.util.CommonConstants;
 import com.squareup.picasso.Picasso;
 
 public class SampleScrollListener implements AbsListView.OnScrollListener {
@@ -39,6 +43,13 @@ public class SampleScrollListener implements AbsListView.OnScrollListener {
         */
         if (totalItemCount == 0) return;
 
+        String sort = PreferenceManager.getDefaultSharedPreferences(context).getString(
+                context.getString(R.string.key_pref_sort),
+                CommonConstants.THEMOVIEDB_SORT_POPULARITY_DES);
+        if (CommonConstants.FILTER_FAVORITE.equals(sort)) {
+            return;
+        }
+
         // if the last items are showed on screen, I do the GET for the next page ...
         if (firstVisibleItem + visibleItemCount == totalItemCount) {
             if (((MainActivity) context).mNextPage) {
@@ -46,7 +57,7 @@ public class SampleScrollListener implements AbsListView.OnScrollListener {
                 ((MainActivity) context).mPage++;
                 // ... then no new page needed
                 ((MainActivity) context).mNextPage = false;
-                new GetUrlsAsyncTask().execute(context, false);
+                new GetMoviesAsyncTask().execute(context, false);
             }
         } else if (!((MainActivity)context).mNextPage){
             // scrolling inside the list, new page manager available

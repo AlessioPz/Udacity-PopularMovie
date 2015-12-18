@@ -19,4 +19,12 @@
     <string name="lbl_movie_release_date">Data Uscita</string>
     <string name="lbl_movie_vote_avg">Voto medio</string>
     <string name="msg_connection_error">Ops .. c\'è stato un problema con la connessione ad Internet. Controlla lo stato del dispositivo e riprova.</string>
+    <string name="btn_favorites">segna come favorito</string>
+    <string name="btn_reviews">Recensioni</string>
+    <string name="msg_favorite_add">Salvare il film come favorito?</string>
+    <string name="btn_cancel">Annulla</string>
+    <string name="sort_favorite">favoriti</string>
+    <string name="btn_favorites_del">Rimuovi dai favoriti</string>
+    <string name="msg_favorite_del">Rimuovere il film dalla lista dei favoriti?</string>
+    <string name="lbl_click_to_view">Selezionare un elemento a sinistra</string>
 </resources>

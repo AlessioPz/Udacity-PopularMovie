@@ -3,7 +3,9 @@ package com.bussolalabs.popularmovies.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,17 +16,32 @@ import android.widget.GridView;
 import android.widget.PopupMenu;
 
 import com.bussolalabs.popularmovies.R;
-import com.bussolalabs.popularmovies.custom.GetUrlsAsyncTask;
-import com.bussolalabs.popularmovies.custom.MoviesAdapter;
+import com.bussolalabs.popularmovies.adapter.MoviesAdapter;
+import com.bussolalabs.popularmovies.async.GetMoviesAsyncTask;
+import com.bussolalabs.popularmovies.custom.Movie;
 import com.bussolalabs.popularmovies.custom.SampleScrollListener;
 import com.bussolalabs.popularmovies.custom.SettingsActivity;
+import com.bussolalabs.popularmovies.db.FavoriteDbHelper;
+import com.bussolalabs.popularmovies.db.PopularMoviesContract;
+import com.bussolalabs.popularmovies.fragment.DetailFragment;
 import com.bussolalabs.popularmovies.util.CommonConstants;
+import com.bussolalabs.popularmovies.util.CommonContents;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.BindString;
+import butterknife.ButterKnife;
 
 /**
  * Created by alessio on 23/09/15.
  */
 public class MainActivity extends AppCompatActivity
-        implements AdapterView.OnItemClickListener, PopupMenu.OnMenuItemClickListener {
+        implements AdapterView.OnItemClickListener,
+        PopupMenu.OnMenuItemClickListener,
+        DetailFragment.OnMovieUpdatedListener
+{
 
     // adapter for the grid view
     public MoviesAdapter mAdapter;
@@ -35,25 +52,80 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = "MainActivity";
 
+    @Bind(R.id.grid_view) GridView gridView;
+
+    @BindString(R.string.key_pref_sort) String stringPrefSort;
+
+    private boolean mTwoPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.mipmap.ic_popmovie);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
         // preference for sort mode and picture's size
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, true);
 
-        GridView gv = (GridView) findViewById(R.id.grid_view);
         mAdapter = new MoviesAdapter(this);
-        gv.setAdapter(mAdapter);
-        gv.setOnScrollListener(new SampleScrollListener(this));
-        gv.setOnItemClickListener(this);
+        gridView.setAdapter(mAdapter);
+        gridView.setOnScrollListener(new SampleScrollListener(this));
+        gridView.setOnItemClickListener(this);
 
-        // task for the fetch of the actual movies page
-        new GetUrlsAsyncTask().execute(this, true);
+        if (savedInstanceState != null)
+        {
+            /*
+            after the screen rotation, I get saved list
+             */
+            mAdapter.movies = (List<Movie>)savedInstanceState.get("MOVIE_KEY");
+        } else {
+            /*
+            no previously action, fill new list
+             */
+            getMovieList();
+        }
+
+        if (findViewById(R.id.item_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        /*
+        for handset device, single pane
+        if the movie data is changed into DetailActivity, refresh list for favorite states
+         */
+        if (CommonContents.movieUpdated) {
+            String sort = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                    getString(R.string.key_pref_sort),
+                    CommonConstants.THEMOVIEDB_SORT_POPULARITY_DES);
+            if (CommonConstants.FILTER_FAVORITE.equals(sort)) {
+                // retrieve only favorite movies from local db
+                mAdapter.movies = new FavoriteDbHelper(this).retrieveAll();
+            } else {
+                /*
+                update favorite state for the movie updated
+                 */
+                String id = PopularMoviesContract.FavoriteEntry.getValues().getAsString(PopularMoviesContract.FavoriteEntry.COLUMN_MOVIE_ID);
+                for (int i = 0; i < mAdapter.movies.size(); i++) {
+                    if (mAdapter.movies.get(i).getId().equals(id)) {
+                        mAdapter.movies.get(i).setFavorite(new FavoriteDbHelper(this).isFavorite());
+                    }
+                }
+            }
+            mAdapter.notifyDataSetChanged();
+            CommonContents.movieUpdated = false;
+        }
     }
 
     @Override
@@ -86,16 +158,30 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // show the detail of the selected movie
-        Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra(CommonConstants.MOVIE_POSITION, position);
-        intent.putExtra(CommonConstants.MOVIE_POSTER_PATH, mAdapter.poster_paths.get(position));
-        intent.putExtra(CommonConstants.MOVIE_ORIG_TITLE, mAdapter.titles.get(position));
-        intent.putExtra(CommonConstants.MOVIE_OVERVIEW, mAdapter.overviews.get(position));
-        intent.putExtra(CommonConstants.MOVIE_RELEASE_DATE, mAdapter.release_dates.get(position));
-        intent.putExtra(CommonConstants.MOVIE_VOTE_AVG, mAdapter.vote_avg.get(position));
+        /*
+        select movie from the grid
+         */
+        Movie movie = mAdapter.movies.get(position);
+        if (mTwoPane) {
+            /*
+            tablet device: get fragment detail
+             */
+            Bundle arguments = new Bundle();
+            arguments.putParcelable("movie", movie);
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.item_detail_container, fragment)
+                    .commit();
+        } else {
+            /*
+            handset device: open activity detail
+             */
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("movie", movie);
 
-        this.startActivity(intent);
+            this.startActivity(intent);
+        }
     }
 
     @Override
@@ -105,10 +191,13 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor editor = preferences.edit();
         switch (item.getItemId()){
             case R.id.sort_popular:
-                editor.putString(getString(R.string.key_pref_sort), CommonConstants.THEMOVIEDB_SORT_POPULARITY_DES);
+                editor.putString(stringPrefSort, CommonConstants.THEMOVIEDB_SORT_POPULARITY_DES);
                 break;
             case R.id.sort_rated:
-                editor.putString(getString(R.string.key_pref_sort), CommonConstants.THEMOVIEDB_SORT_VOTE_AVG_DES);
+                editor.putString(stringPrefSort, CommonConstants.THEMOVIEDB_SORT_VOTE_AVG_DES);
+                break;
+            case R.id.sort_favorite:
+                editor.putString(stringPrefSort, CommonConstants.FILTER_FAVORITE);
                 break;
         }
         editor.apply();
@@ -118,8 +207,52 @@ public class MainActivity extends AppCompatActivity
         mPage = 1;
         mNextPage = true;
         // get first page
-        new GetUrlsAsyncTask().execute(this, true);
+        getMovieList();
 
         return false;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("MOVIE_KEY", (ArrayList<? extends Parcelable>) mAdapter.movies);
+    }
+
+    private void getMovieList() {
+        /*
+        fill the grid as new
+         */
+        String sort = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                getString(R.string.key_pref_sort),
+                CommonConstants.THEMOVIEDB_SORT_POPULARITY_DES);
+        if (CommonConstants.FILTER_FAVORITE.equals(sort)) {
+            // retrieve only favorite movies from local db
+            mAdapter.movies = new FavoriteDbHelper(this).retrieveAll();
+            mAdapter.notifyDataSetChanged();
+        } else {
+            // task for the fetch of the actual movies page
+            new GetMoviesAsyncTask().execute(this, true);
+        }
+    }
+
+    @Override
+    public void onMovieUpdated() {
+        /*
+        for tablet device, two pane
+        the movie is updated into the detail fragment, refresh grid list
+         */
+        String sort = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                getString(R.string.key_pref_sort),
+                CommonConstants.THEMOVIEDB_SORT_POPULARITY_DES);
+        if (CommonConstants.FILTER_FAVORITE.equals(sort)) {
+            // retrieve only favorite movies from local db
+            mAdapter.movies = new FavoriteDbHelper(this).retrieveAll();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.item_detail_container, new Fragment())
+                    .commit();
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+
 }

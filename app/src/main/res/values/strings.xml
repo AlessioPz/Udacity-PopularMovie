@@ -18,4 +18,13 @@
     <string name="lbl_movie_release_date">Release Date</string>
     <string name="lbl_movie_vote_avg">Vote average</string>
     <string name="msg_connection_error">Ops ... there was a problem with the Internet connection. Please check the device status and retry.</string>
+    <string name="btn_reviews">Reviews</string>
+    <string name="btn_favorites">mark as favorite</string>
+    <string name="msg_favorite_add">Set the movie as favorite?</string>
+    <string name="btn_ok" translatable="false">OK</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="sort_favorite">favorite</string>
+    <string name="btn_favorites_del">Remove from favorites</string>
+    <string name="msg_favorite_del">Remove the movie from favorites list?</string>
+    <string name="lbl_click_to_view">Select an item on the left</string>
 </resources>
