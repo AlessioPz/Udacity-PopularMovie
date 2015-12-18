@@ -27,4 +27,8 @@
     <string name="btn_favorites_del">Remove from favorites</string>
     <string name="msg_favorite_del">Remove the movie from favorites list?</string>
     <string name="lbl_click_to_view">Select an item on the left</string>
+    <string name="msg_share">Share trailer</string>
+    <string name="share_content">Please take a look at this video:</string>
+    <string name="share_subject" translatable="false">YouTube Trailer</string>
+    <string name="msg_no_share">Sorry, there is nothing to share</string>
 </resources>

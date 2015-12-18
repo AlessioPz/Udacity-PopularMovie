@@ -27,4 +27,7 @@
     <string name="btn_favorites_del">Rimuovi dai favoriti</string>
     <string name="msg_favorite_del">Rimuovere il film dalla lista dei favoriti?</string>
     <string name="lbl_click_to_view">Selezionare un elemento a sinistra</string>
+    <string name="msg_share">Condividi trailer</string>
+    <string name="share_content">Dai un\'occhiata a questo video: </string>
+    <string name="msg_no_share">Mi dispiace, non c\'è nulla da condividere</string>
 </resources>

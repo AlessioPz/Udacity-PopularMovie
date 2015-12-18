@@ -1,7 +1,9 @@
 package com.bussolalabs.popularmovies.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -131,6 +133,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        if (mTwoPane) getMenuInflater().inflate(R.menu.menu_share, menu);
         return true;
     }
 
@@ -150,6 +153,25 @@ public class MainActivity extends AppCompatActivity
             menuInflater.inflate(R.menu.menu_sort, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(this);
             popupMenu.show();
+            return true;
+        }
+
+        if (id == R.id.action_share) {
+            if (CommonContents.videos.size() == 0) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.msg_no_share))
+                        .setNeutralButton("OK", null);
+                builder.show();
+                return false;
+            }
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            String key = CommonContents.videos.get(0).getKey();
+            sendIntent.putExtra(Intent.EXTRA_TEXT, getText(R.string.share_content) + " " + Uri.parse(CommonConstants.YOUTUBE_URL_WATCH + key).toString());
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.share_subject));
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+
             return true;
         }
 
@@ -232,6 +254,12 @@ public class MainActivity extends AppCompatActivity
         } else {
             // task for the fetch of the actual movies page
             new GetMoviesAsyncTask().execute(this, true);
+        }
+        if (mTwoPane) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.item_detail_container, new Fragment())
+                    .commit();
+            CommonContents.videos.clear();
         }
     }
 
