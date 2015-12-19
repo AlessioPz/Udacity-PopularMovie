@@ -126,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/img_youyube"
-                android:src="@drawable/youtube"
+                android:src="@drawable/youtube48px"
                 android:layout_centerInParent="true"
                 android:onClick="videoClick" />
         </RelativeLayout>
