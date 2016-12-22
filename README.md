@@ -1,2 +1,2 @@
 # Udacity-PopularMovie
-Project for the Udacity Nano Degree
+Android Developer Nanodegree Program's project.
